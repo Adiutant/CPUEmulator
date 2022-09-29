@@ -20,7 +20,7 @@ public:
             {"cnt",0}
         };
         unsigned char cmd = 0;
-        unsigned char RAM[255];
+        unsigned char RAM[256];
     };
     CPUStructure();
     const CPUStructure::CPU& initCPU();
@@ -38,6 +38,7 @@ private:
 signals:
 
     void CPUStateChanged(const CPUStructure::CPU&);
+    void memoryFocus(uint32_t);
 };
 
 #endif // CPUSTRUCTURE_H

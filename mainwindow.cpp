@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
             ui->memoryTable->setItem(i, j ,item);
         }
     }
+    connect(cpuHelper,&CPUStructure::memoryFocus, this,&MainWindow::onMemoryFocus);
 
 
 }
@@ -82,7 +83,6 @@ void MainWindow::onCPUStateChanged(const CPUStructure::CPU &cpuState)
 
     for (int i =0; i < 16; i ++){
             for (int j = 0; j<16 ;j++){
-                qDebug() << i << " " <<j;
                 QTableWidgetItem *item = ui->memoryTable->item(i,j);
                 QByteArray byte;
                 byte.append(cpuState.RAM[(i*16)+j]);
@@ -111,6 +111,11 @@ void MainWindow::on_runButtton_clicked()
 //            errorOnLine = parseRes.lineErr;
         return;
     }
+    for (int i =0; i < 16; i ++){
+            for (int j = 0; j<16 ;j++){
+                 ui->memoryTable->item(i,j)->setBackground(Qt::transparent);
+            }
+    }
     cpuHelper->runProgramm(parseRes.binary);
 
 }
@@ -130,6 +135,26 @@ void MainWindow::on_programmText_textChanged()
 //        cursor.select(QTextCursor::LineUnderCursor);
 //        cursor.setBlockFormat(fmt);
 //        errorOnLine = -1;
+
+}
+
+void MainWindow::onMemoryFocus(uint32_t index)
+{
+
+    for (int i =0; i < 16; i ++){
+            for (int j = 0; j<16 ;j++){
+
+                if ((i*16)+j == index){
+                    ui->memoryTable->item(i,j)->setBackground(Qt::red);
+                    return;
+                }
+                else{
+                    ui->memoryTable->item(i,j)->setBackground(Qt::transparent);
+                }
+
+            }
+    }
+
 
 }
 

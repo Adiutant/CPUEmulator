@@ -10,7 +10,13 @@ const static QMap<QString,unsigned char> commandDictionary{
     {"ADD", 0x11},
     {"SUB", 0x12},
     {"INC", 0x13},
-    {"DEC", 0x14}
+    {"DEC", 0x14},
+    {"RD", 0x15},
+    {"WR", 0x16},
+    {"SAH", 0x17},
+    {"SAL", 0x18},
+    {"GTZ", 0x19},
+    {"LOEZ", 0x20}
 
 
 };

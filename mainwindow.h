@@ -24,6 +24,7 @@ private slots:
     void on_runButtton_clicked();
 
     void on_programmText_textChanged();
+    void onMemoryFocus(uint32_t);
 
 
 private:
