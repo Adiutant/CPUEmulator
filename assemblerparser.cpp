@@ -19,15 +19,15 @@ AssemblerParser::ParseResult AssemblerParser::makeBinary(const QStringList & pro
             res.lineErr = lRes.line;
             return res;
         }
-        if (counter + 3 >= 255 ){
+        if (counter + 2 >= 255 ){
             res.err = OverflowErr;
             res.lineErr = lRes.line;
             return res;
         }
         res.binary[counter] = lRes.binary.at(0);
         res.binary[counter + 1] = lRes.binary.at(1);
-        res.binary[counter + 2] = lRes.binary.at(2);
-        counter+=3;
+//        res.binary[counter + 2] = lRes.binary.at(2);
+        counter+=2;
     }
     return res;
 
@@ -53,13 +53,13 @@ AssemblerParser::LineParseResult AssemblerParser::parseCommand(const QString & l
         return result;
     }
     binaryLine.append(lineArgs[1].toUInt());
-    if (lineArgs[2] >= 255){
-        result.binary = binaryLine;
-        result.err = InvalidConstant;
-        result.line = lineNum;
-        return result;
-    }
-    binaryLine.append(lineArgs[2].toUInt());
+//    if (lineArgs[2] >= 255){
+//        result.binary = binaryLine;
+//        result.err = InvalidConstant;
+//        result.line = lineNum;
+//        return result;
+//    }
+//    binaryLine.append(lineArgs[2].toUInt());
     result.binary = binaryLine;
     result.err = NoErr;
     result.line = lineNum;

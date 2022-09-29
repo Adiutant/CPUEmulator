@@ -4,12 +4,16 @@
 #include <QString>
 #include <stdint.h>
 #include <QObject>
+#include <QTimer>
+#include <QStack>
+#include "assemblerparser.h"
 
 
 class CPUStructure : public QObject
 {
     Q_OBJECT
 public:
+
     struct CPU{
         QMap<QString, uint32_t > registers{
             {"acc",0},
@@ -22,9 +26,13 @@ public:
     const CPUStructure::CPU& initCPU();
 
     void runProgramm(unsigned char[]);
+private slots:
+    void onCPUTick();
 
 private:
     CPU *cpuInstance;
+    QStack<unsigned char> *stack;
+    QTimer *tickTimer;
 
 
 signals:
