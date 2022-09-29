@@ -7,6 +7,7 @@
 #include "cpustructure.h"
 #include "assemblerparser.h"
 #include <QDebug>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

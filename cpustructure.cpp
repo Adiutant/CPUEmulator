@@ -31,7 +31,7 @@ void CPUStructure::runProgramm(unsigned char * bin)
 
     }
     connect(tickTimer,&QTimer::timeout,this,&CPUStructure::onCPUTick);
-    tickTimer->start(1);
+    tickTimer->start(20);
 
 }
 
@@ -76,6 +76,30 @@ void CPUStructure::onCPUTick()
         case 0x20:
             if (cpuInstance->registers["acc"] <= 0){
                 cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->registers["cnt"]+1];
+            }
+
+        break;
+        case 0x11 << 2:
+            cpuInstance->registers["acc"] += cpuInstance->RAM[ cpuInstance->RAM[address]];
+        break;
+        case 0x12 << 2:
+            cpuInstance->registers["acc"] -= cpuInstance->RAM[cpuInstance->RAM[address]];
+        break;
+        case 0x15 << 2:
+            cpuInstance->registers["acc"] = cpuInstance->RAM[cpuInstance->RAM[address]];
+        break;
+        case 0x16 << 2:
+             cpuInstance->RAM[cpuInstance->RAM[address]] = cpuInstance->registers["acc"];
+        break;
+        case 0x19 << 2:
+            if (cpuInstance->registers["acc"] > 0){
+                cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
+            }
+
+        break;
+        case 0x20 << 2:
+            if (cpuInstance->registers["acc"] <= 0){
+                cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
             }
 
         break;

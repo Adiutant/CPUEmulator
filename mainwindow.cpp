@@ -99,7 +99,7 @@ void MainWindow::onCPUStateChanged(const CPUStructure::CPU &cpuState)
 
 void MainWindow::on_runButtton_clicked()
 {
-    AssemblerParser::ParseResult parseRes = asmParser->makeBinary(ui->programmText->toPlainText().split(';'));
+    AssemblerParser::ParseResult parseRes = asmParser->makeBinary(ui->programmText->toPlainText().split('\n'));
     if (parseRes.err != AssemblerParser::ParseError::NoErr){
 //        QTextBlockFormat fmt;
 //        fmt.setBackground(Qt::red);
@@ -109,6 +109,7 @@ void MainWindow::on_runButtton_clicked()
 //            cursor.select(QTextCursor::LineUnderCursor);
 //            cursor.setBlockFormat(fmt);
 //            errorOnLine = parseRes.lineErr;
+        QMessageBox::warning(this,tr("Ошибка компиляции"),QString("На %1 строке").arg(parseRes.lineErr + 1));
         return;
     }
     for (int i =0; i < 16; i ++){

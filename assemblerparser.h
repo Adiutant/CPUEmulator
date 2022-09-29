@@ -24,6 +24,10 @@ const static QMap<QString,unsigned char> commandDictionary{
 class AssemblerParser
 {
 public:
+    enum AddressType{
+      Straight,
+      Reference
+    };
     enum ParseError{
       UnknownCommand,
       InvalidAdress,
