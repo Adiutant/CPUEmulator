@@ -38,14 +38,14 @@ AssemblerParser::LineParseResult AssemblerParser::parseCommand(const QString & l
 
     LineParseResult result;
     QList<unsigned char> binaryLine;
-    QStringList lineArgs = line.split(' ');
+    QStringList lineArgs = line.trimmed().split(' ');
     if (!commandDictionary.contains(lineArgs[0])){
         result.binary = binaryLine;
         result.err = UnknownCommand;
         result.line = lineNum;
         return result;
     }
-    binaryLine.append(commandDictionary.contains(lineArgs[0]));
+    binaryLine.append(commandDictionary[lineArgs[0]]);
     if (lineArgs[1] >= 255){
         result.binary = binaryLine;
         result.err = InvalidAdress;

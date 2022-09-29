@@ -111,7 +111,7 @@ void MainWindow::on_runButtton_clicked()
 //            errorOnLine = parseRes.lineErr;
         return;
     }
-    cpuHelper->runProgramm(asmParser->makeBinary(ui->programmText->toPlainText().split(';')).binary);
+    cpuHelper->runProgramm(parseRes.binary);
 
 }
 
