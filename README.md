@@ -1,0 +1,10 @@
+# CPUEmulator
+SAL 25;
+WR 25;
+SAL 1;
+WR 26;
+RD 25;
+SUB 26;
+WR 25;
+RD 25;
+GTZ 8;
