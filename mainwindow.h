@@ -28,6 +28,10 @@ private slots:
     void onMemoryFocus(uint32_t);
 
 
+    void on_stepButton_clicked();
+
+    void on_compileButton_clicked();
+
 private:
     CPUStructure *cpuHelper;
     int errorOnLine = -1;
