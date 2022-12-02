@@ -35,6 +35,18 @@ void CPUStructure::runProgramm(unsigned char * bin)
 
 }
 
+void CPUStructure::compile(unsigned char * bin )
+{
+    for (auto key :cpuInstance->registers.keys()){
+        cpuInstance->registers[key]= 0;
+    }
+
+    for (int i = 0; i <256;i++){
+        cpuInstance->RAM[i] = bin[i];
+    }
+    emit CPUStateChanged(*cpuInstance);
+}
+
 void CPUStructure::onCPUTick()
 {
     emit memoryFocus(cpuInstance->registers["cnt"]);

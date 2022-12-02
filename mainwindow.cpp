@@ -161,3 +161,25 @@ void MainWindow::onMemoryFocus(uint32_t index)
 
 
 
+
+void MainWindow::on_stepButton_clicked()
+{
+    cpuHelper->onCPUTick();
+}
+
+
+void MainWindow::on_compileButton_clicked()
+{
+    AssemblerParser::ParseResult parseRes = asmParser->makeBinary(ui->programmText->toPlainText().split('\n'));
+    if (parseRes.err != AssemblerParser::ParseError::NoErr){
+        QMessageBox::warning(this,tr("Ошибка компиляции"),QString("На %1 строке").arg(parseRes.lineErr + 1));
+        return;
+    }
+    for (int i =0; i < 16; i ++){
+            for (int j = 0; j<16 ;j++){
+                 ui->memoryTable->item(i,j)->setBackground(Qt::transparent);
+            }
+    }
+    cpuHelper->compile(parseRes.binary);
+}
+

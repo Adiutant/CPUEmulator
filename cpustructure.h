@@ -25,8 +25,9 @@ public:
     CPUStructure();
     const CPUStructure::CPU& initCPU();
 
-    void runProgramm(unsigned char[]);
-private slots:
+    void runProgramm(unsigned char*);
+    void compile(unsigned char*);
+public slots:
     void onCPUTick();
 
 private:

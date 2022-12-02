@@ -40,6 +40,13 @@
        <widget class="CodeEditor" name="programmText"/>
       </item>
       <item>
+       <widget class="QPushButton" name="compileButton">
+        <property name="text">
+         <string>Скомпилировать</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="runButtton">
         <property name="text">
          <string>Запуск</string>
@@ -83,7 +90,7 @@
       <x>580</x>
       <y>50</y>
       <width>341</width>
-      <height>391</height>
+      <height>421</height>
      </rect>
     </property>
     <property name="title">
@@ -101,6 +108,13 @@
      <layout class="QVBoxLayout" name="memoryLayout">
       <item>
        <widget class="QTableWidget" name="memoryTable"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="stepButton">
+        <property name="text">
+         <string>Шаг</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
