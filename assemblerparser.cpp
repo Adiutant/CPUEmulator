@@ -13,7 +13,7 @@ AssemblerParser::ParseResult AssemblerParser::makeBinary(const QStringList & pro
         if (programm.at(i).isEmpty()){
             continue ;
         }
-        QRegExp match("\\w+ \\$?\\d+ *;$");
+        QRegExp match("\\s*\\w+ \\$?\\d+ *;\\s*$");
         if (!match.exactMatch(programm.at(i))){
             res.err = SyntaxErr;
             res.lineErr = i;
