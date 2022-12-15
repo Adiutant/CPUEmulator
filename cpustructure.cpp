@@ -59,7 +59,7 @@ void CPUStructure::onCPUTick()
         case 0x12:
             if (cpuInstance->registers["acc"] < cpuInstance->RAM[address] )
             {
-                cpuInstance->registers["sfg"] = 1;
+                cpuInstance->registers["sgf"] = 1;
             }
             cpuInstance->registers["acc"] -= cpuInstance->RAM[address];
         break;
@@ -96,8 +96,9 @@ void CPUStructure::onCPUTick()
 
         break;
         case 0x21:
-            if (cpuInstance->registers["sfg"] > 0){
+            if (cpuInstance->registers["sgf"] > 0){
                 cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->registers["cnt"]+1];
+                cpuInstance->registers["sgf"] = 0;
             }
 
         break;
@@ -107,7 +108,7 @@ void CPUStructure::onCPUTick()
         case 0x12 << 2:
             if (cpuInstance->registers["acc"] < cpuInstance->RAM[cpuInstance->RAM[address]] )
             {
-                cpuInstance->registers["sfg"] = 1;
+                cpuInstance->registers["sgf"] = 1;
             }
             cpuInstance->registers["acc"] -= cpuInstance->RAM[cpuInstance->RAM[address]];
         break;
@@ -130,8 +131,9 @@ void CPUStructure::onCPUTick()
 
         break;
     case 0x21 <<2:
-        if (cpuInstance->registers["sfg"] > 0){
+        if (cpuInstance->registers["sgf"] > 0){
             cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
+            cpuInstance->registers["sgf"] = 0;
         }
     }
     if ( cpuInstance->registers["cnt"] == 254){

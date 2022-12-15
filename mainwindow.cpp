@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
                 item->setText(currentKey);
                 item->setFlags(Qt::ItemIsEnabled);
             }
+            qDebug() << i<<";"<< j;
             ui->registersTable->setItem(i, j ,item);
         }
     }
@@ -71,6 +72,7 @@ void MainWindow::onCPUStateChanged(const CPUStructure::CPU &cpuState)
         QString currentKey = cpuState.registers.keys()[i];
         for (int j = 0; j<2 ;j++){
             QTableWidgetItem *item = ui->registersTable->item(i,j);
+            qDebug() << item->text();
             if (j != 0){
                 item->setText(QString::number(cpuState.registers[currentKey]));
             }
