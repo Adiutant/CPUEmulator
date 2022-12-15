@@ -183,3 +183,11 @@ void MainWindow::on_compileButton_clicked()
     cpuHelper->compile(parseRes.binary);
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() ==Qt::Key_S && event->modifiers() == Qt::SHIFT){
+
+    }
+
+}
+

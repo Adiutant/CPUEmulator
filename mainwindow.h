@@ -31,7 +31,8 @@ private slots:
     void on_stepButton_clicked();
 
     void on_compileButton_clicked();
-
+protected:
+    virtual void keyPressEvent(QKeyEvent *event);
 private:
     CPUStructure *cpuHelper;
     int errorOnLine = -1;
