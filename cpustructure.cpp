@@ -52,6 +52,7 @@ void CPUStructure::onCPUTick()
     emit memoryFocus(cpuInstance->registers["cnt"]);
     unsigned char currentCommand = cpuInstance->RAM[cpuInstance->registers["cnt"]];
     unsigned char address = cpuInstance->RAM[cpuInstance->registers["cnt"]+1];
+    uint32_t x, y;
     switch (currentCommand) {
         case 0x11:
             cpuInstance->registers["acc"] += cpuInstance->RAM[address];
@@ -103,41 +104,96 @@ void CPUStructure::onCPUTick()
 
         break;
         case 0x22:
-            cpuInstance->registers["EBX"] = (unsigned short)((cpuInstance->registers["acc"] * cpuInstance->RAM[address]) >> 16);
-            cpuInstance->registers["acc"] = (unsigned short) cpuInstance->registers["acc"] * cpuInstance->RAM[address];
-        case 0x11 << 2:
+            cpuInstance->registers["EBX"] = (unsigned short)((uint32_t)(cpuInstance->registers["acc"] * cpuInstance->RAM[address]) >> 16);
+            cpuInstance->registers["acc"] = (unsigned short) ((uint32_t)cpuInstance->registers["acc"] * cpuInstance->RAM[address]);
+        break;
+    case 0x23:
+        cpuInstance->RAM[address] = cpuInstance->registers["acc"] >> 8;
+    case 0x24:
+        cpuInstance->registers["acc"] &= 0x00FF;
+        cpuInstance->registers["acc"] |=  cpuInstance->RAM[address];
+    break;
+    case 0x25:
+        x= ((uint8_t)cpuInstance->RAM[address+3] << 24) | ((uint8_t)cpuInstance->RAM[address+2] << 16) | ((uint8_t)cpuInstance->RAM[address+1] << 8) | (uint8_t)cpuInstance->RAM[address];;
+         y = ((uint16_t)cpuInstance->registers["acc"]) | ((uint16_t)cpuInstance->registers["EBX"] <<16);
+
+        cpuInstance->registers["acc"] = (x + y);
+        cpuInstance->registers["EBX"] = (x+y) >>16;
+    break;
+        case 0x11 +0x20:
             cpuInstance->registers["acc"] += cpuInstance->RAM[ cpuInstance->RAM[address]];
         break;
-        case 0x12 << 2:
+        case 0x12 +0x20:
             if (cpuInstance->registers["acc"] < cpuInstance->RAM[cpuInstance->RAM[address]] )
             {
                 cpuInstance->registers["sgf"] = 1;
             }
             cpuInstance->registers["acc"] -= cpuInstance->RAM[cpuInstance->RAM[address]];
         break;
-        case 0x15 << 2:
+        case 0x15 +0x20:
             cpuInstance->registers["acc"] = cpuInstance->RAM[cpuInstance->RAM[address]];
         break;
-        case 0x16 << 2:
+        case 0x16 +0x20:
              cpuInstance->RAM[cpuInstance->RAM[address]] = cpuInstance->registers["acc"];
         break;
-        case 0x19 << 2:
+        case 0x19 +0x20:
             if (cpuInstance->registers["acc"] > 0){
                 cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
             }
 
         break;
-        case 0x20 << 2:
+        case 0x20 +0x20:
             if (cpuInstance->registers["acc"] <= 0){
                 cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
             }
 
         break;
-    case 0x21 <<2:
+    case 0x21 +0x20:
         if (cpuInstance->registers["sgf"] > 0){
             cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
             cpuInstance->registers["sgf"] = 0;
         }
+        break;
+
+        //reg
+    case 0x11 +0x40:
+        cpuInstance->registers["acc"] += cpuInstance->registers[registersDecode[address]];
+    break;
+    case 0x12 +0x40:
+        if (cpuInstance->registers["acc"] < cpuInstance->registers[registersDecode[address]] )
+        {
+            cpuInstance->registers["sgf"] = 1;
+        }
+        cpuInstance->registers["acc"] -= cpuInstance->registers[registersDecode[address]];
+    break;
+    case 0x15 +0x40:
+        cpuInstance->registers["acc"] = cpuInstance->registers[registersDecode[address]];
+    break;
+    case 0x16 +0x40:
+         cpuInstance->registers[registersDecode[address]] = cpuInstance->registers["acc"];
+    break;
+    case 0x19 +0x40:
+        if (cpuInstance->registers["acc"] > 0){
+            cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
+        }
+
+    break;
+    case 0x20 +0x40:
+        if (cpuInstance->registers["acc"] <= 0){
+            cpuInstance->registers["cnt"] = cpuInstance->registers[registersDecode[address]];
+        }
+
+    break;
+case 0x21 +0x40:
+    if (cpuInstance->registers["sgf"] > 0){
+        cpuInstance->registers["cnt"] = cpuInstance->registers[registersDecode[address]];
+        cpuInstance->registers["sgf"] = 0;
+    }
+    break;
+    case 0x22 +0x40:
+        cpuInstance->registers["EBX"] = (unsigned short)(((uint32_t)cpuInstance->registers["acc"] * cpuInstance->registers[registersDecode[address]]) >> 16);
+        cpuInstance->registers["acc"] = (unsigned short) ((uint32_t)cpuInstance->registers["acc"] * cpuInstance->registers[registersDecode[address]]);
+    break;
     }
     if ( cpuInstance->registers["cnt"] == 254){
          cpuInstance->registers["cnt"] = 0;

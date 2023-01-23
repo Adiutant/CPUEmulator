@@ -18,17 +18,24 @@ const static QMap<QString,unsigned char> commandDictionary{
     {"GTZ", 0x19},
     {"LOEZ", 0x20},
     {"SFGS", 0x21}, //signflagset
-    {"MUL",0x22}
+    {"MUL",0x22},
+    {"WRH", 0x23},
+    {"RDH",0x24},
+    {"ADDA", 0x25}
 
 
 };
-
+const static QMap<QString, char> registersDictionary{
+    {"EBX", 0x01},
+    {"ECX",0x02}
+};
 class AssemblerParser
 {
 public:
     enum AddressType{
       Straight,
-      Reference
+      Reference,
+      Register
     };
     enum ParseError{
       UnknownCommand,

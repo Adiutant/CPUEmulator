@@ -14,7 +14,8 @@ AssemblerParser::ParseResult AssemblerParser::makeBinary(const QStringList & pro
             continue ;
         }
         QRegExp match("\\s*\\w+ \\$?\\d+ *;\\s*$");
-        if (!match.exactMatch(programm.at(i))){
+        QRegExp matchReg("\\s*\\w+ \\$?\\w+ *;\\s*$");
+        if (!match.exactMatch(programm.at(i))&& !matchReg.exactMatch(programm.at(i))){
             res.err = SyntaxErr;
             res.lineErr = i;
             return res;
@@ -52,11 +53,17 @@ AssemblerParser::LineParseResult AssemblerParser::parseCommand(const QString & l
         result.line = lineNum;
         return result;
     }
-
+    QString pureAddress = lineArgs[1];
+    for (auto &ch : lineArgs[1]){
+        if (ch == ';')
+        {
+            pureAddress.remove(ch);
+        }
+    }
     binaryLine.append(commandDictionary[lineArgs[0]]);
     QRegExp refregexp("(\\$)(\\d*)");
     QRegExp strregexp("\\d+");
-    if (refregexp.indexIn(lineArgs[1]) == -1)
+    if (refregexp.indexIn(lineArgs[1]) == -1 && !registersDictionary.contains(pureAddress.trimmed()))
     {
         if (strregexp.indexIn(lineArgs[1]) == -1){
             result.binary = binaryLine;
@@ -72,6 +79,8 @@ AssemblerParser::LineParseResult AssemblerParser::parseCommand(const QString & l
     }
     else  if (refregexp.cap(1) == "$"){
         addrType = Reference;
+    } else if (registersDictionary.contains(pureAddress.trimmed())){
+        addrType = Register;
     }
     else
     {
@@ -90,6 +99,9 @@ AssemblerParser::LineParseResult AssemblerParser::parseCommand(const QString & l
     if (addrType == Reference)
     {
         binaryLine[0] = binaryLine[0] << 2;
+    } else if (addrType == Register){
+        binaryLine[0]  = binaryLine[0] <<3;
+        binaryLine.append(registersDictionary[pureAddress]);
     }
     for (auto &ch : lineArgs[1]){
         if (!ch.isDigit())
@@ -97,7 +109,9 @@ AssemblerParser::LineParseResult AssemblerParser::parseCommand(const QString & l
             lineArgs[1].remove(ch);
         }
     }
-    binaryLine.append(lineArgs[1].toUInt());
+    if (addrType != Register){
+        binaryLine.append(lineArgs[1].toUInt());
+    }
 //    if (lineArgs[2] >= 255){
 //        result.binary = binaryLine;
 //        result.err = InvalidConstant;

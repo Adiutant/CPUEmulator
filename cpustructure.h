@@ -8,20 +8,25 @@
 #include <QStack>
 #include "assemblerparser.h"
 
-
+const static QMap<char,QString> registersDecode{
+    { 0x01,"EBX"},
+    {0x02,"ECX"}
+};
 class CPUStructure : public QObject
 {
+
     Q_OBJECT
 public:
 
     struct CPU{
-        QMap<QString, uint32_t > registers{
+        QMap<QString, uint16_t > registers{
             {"acc",0},
             {"cnt",0},
             {"EBX",0},
             {"ECX",0},
             {"sgf",0}  //signflag
         };
+
         unsigned char cmd = 0;
         unsigned char RAM[256];
     };
