@@ -102,6 +102,9 @@ void CPUStructure::onCPUTick()
             }
 
         break;
+        case 0x22:
+            cpuInstance->registers["EBX"] = (unsigned short)((cpuInstance->registers["acc"] * cpuInstance->RAM[address]) >> 16);
+            cpuInstance->registers["acc"] = (unsigned short) cpuInstance->registers["acc"] * cpuInstance->RAM[address];
         case 0x11 << 2:
             cpuInstance->registers["acc"] += cpuInstance->RAM[ cpuInstance->RAM[address]];
         break;

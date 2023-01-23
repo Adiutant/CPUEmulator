@@ -18,6 +18,8 @@ public:
         QMap<QString, uint32_t > registers{
             {"acc",0},
             {"cnt",0},
+            {"EBX",0},
+            {"ECX",0},
             {"sgf",0}  //signflag
         };
         unsigned char cmd = 0;
