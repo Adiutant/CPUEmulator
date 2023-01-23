@@ -98,9 +98,9 @@ AssemblerParser::LineParseResult AssemblerParser::parseCommand(const QString & l
 
     if (addrType == Reference)
     {
-        binaryLine[0] = binaryLine[0] << 2;
+        binaryLine[0] = binaryLine[0] +0x20;
     } else if (addrType == Register){
-        binaryLine[0]  = binaryLine[0] <<3;
+        binaryLine[0]  = binaryLine[0] +0x40;
         binaryLine.append(registersDictionary[pureAddress]);
     }
     for (auto &ch : lineArgs[1]){

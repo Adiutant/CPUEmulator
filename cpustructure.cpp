@@ -50,6 +50,7 @@ void CPUStructure::compile(unsigned char * bin )
 void CPUStructure::onCPUTick()
 {
     emit memoryFocus(cpuInstance->registers["cnt"]);
+    bool jmp=false;
     unsigned char currentCommand = cpuInstance->RAM[cpuInstance->registers["cnt"]];
     unsigned char address = cpuInstance->RAM[cpuInstance->registers["cnt"]+1];
     uint32_t x, y;
@@ -87,12 +88,14 @@ void CPUStructure::onCPUTick()
         case 0x19:
             if (cpuInstance->registers["acc"] > 0){
                 cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->registers["cnt"]+1];
+                jmp  = true;
             }
 
         break;
         case 0x20:
             if (cpuInstance->registers["acc"] <= 0){
                 cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->registers["cnt"]+1];
+                jmp  = true;
             }
 
         break;
@@ -100,6 +103,7 @@ void CPUStructure::onCPUTick()
             if (cpuInstance->registers["sgf"] > 0){
                 cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->registers["cnt"]+1];
                 cpuInstance->registers["sgf"] = 0;
+                jmp  = true;
             }
 
         break;
@@ -111,7 +115,7 @@ void CPUStructure::onCPUTick()
         cpuInstance->RAM[address] = cpuInstance->registers["acc"] >> 8;
     case 0x24:
         cpuInstance->registers["acc"] &= 0x00FF;
-        cpuInstance->registers["acc"] |=  cpuInstance->RAM[address];
+        cpuInstance->registers["acc"] |=  cpuInstance->RAM[address]<<8;
     break;
     case 0x25:
         x= ((uint8_t)cpuInstance->RAM[address+3] << 24) | ((uint8_t)cpuInstance->RAM[address+2] << 16) | ((uint8_t)cpuInstance->RAM[address+1] << 8) | (uint8_t)cpuInstance->RAM[address];;
@@ -139,21 +143,29 @@ void CPUStructure::onCPUTick()
         case 0x19 +0x20:
             if (cpuInstance->registers["acc"] > 0){
                 cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
+                jmp  = true;
             }
 
         break;
         case 0x20 +0x20:
             if (cpuInstance->registers["acc"] <= 0){
                 cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
+                jmp  = true;
             }
 
         break;
+
     case 0x21 +0x20:
         if (cpuInstance->registers["sgf"] > 0){
             cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
             cpuInstance->registers["sgf"] = 0;
+            jmp  = true;
         }
         break;
+    case 0x22+0x20:
+        cpuInstance->registers["EBX"] = (unsigned short)((uint32_t)(cpuInstance->registers["acc"] * cpuInstance->RAM[cpuInstance->RAM[address]]) >> 16);
+        cpuInstance->registers["acc"] = (unsigned short) ((uint32_t)cpuInstance->registers["acc"] * cpuInstance->RAM[cpuInstance->RAM[address]]);
+    break;
 
         //reg
     case 0x11 +0x40:
@@ -174,13 +186,15 @@ void CPUStructure::onCPUTick()
     break;
     case 0x19 +0x40:
         if (cpuInstance->registers["acc"] > 0){
-            cpuInstance->registers["cnt"] = cpuInstance->RAM[cpuInstance->RAM[cpuInstance->registers["cnt"]+1]];
+            cpuInstance->registers["cnt"] = cpuInstance->registers[registersDecode[address]];
+            jmp  = true;
         }
 
     break;
     case 0x20 +0x40:
         if (cpuInstance->registers["acc"] <= 0){
             cpuInstance->registers["cnt"] = cpuInstance->registers[registersDecode[address]];
+            jmp  = true;
         }
 
     break;
@@ -188,6 +202,7 @@ case 0x21 +0x40:
     if (cpuInstance->registers["sgf"] > 0){
         cpuInstance->registers["cnt"] = cpuInstance->registers[registersDecode[address]];
         cpuInstance->registers["sgf"] = 0;
+        jmp  = true;
     }
     break;
     case 0x22 +0x40:
@@ -200,7 +215,7 @@ case 0x21 +0x40:
          disconnect(tickTimer,&QTimer::timeout,this,&CPUStructure::onCPUTick);
          tickTimer->stop();
     }
-    else{
+    else if(!jmp){
         cpuInstance->registers["cnt"]+=2;
     }
 
